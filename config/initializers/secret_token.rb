@@ -9,4 +9,19 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-MichaelHartlRedo::Application.config.secret_key_base = 'ed8ac8a5f28d929542ffe557417da8eaf085e9438f09c39c86617420d32af7181b177cb627c584e663f6d35214db73eeb66a55e4fafac5550504f5233e5740a3'
+require 'securerandom'
+
+def secure_token
+  token_file = Rails.root.join('.secret')
+  if File.exist?(token_file)
+    # Use the existing token.
+    File.read(token_file).chomp
+  else
+    # Generate a new token and store it in token_file.
+    token = SecureRandom.hex(64)
+    File.write(token_file, token)
+    token
+  end
+end
+
+MichaelHartlRedo::Application.config.secret_key_base = secure_token
